@@ -173,6 +173,11 @@ volatile extern io_sim_t io;
 #define WGM10 0
 #define WGM21 1
 
+#define WGM20 0
+
+#define COM2A1 7
+#define COM2A0 6
+
 #define COM1A1 7
 #define COM1A0 6
 #define COM1B1 5
