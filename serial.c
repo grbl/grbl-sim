@@ -21,6 +21,7 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "./avr/interrupt.h"
 #include "../serial.h"
 #include <stdio.h>
 #include "simulator.h"
@@ -62,13 +63,13 @@ void simulate_read_interrupt(){
 }
 
 
-extern volatile uint8_t rx_buffer_head;
-extern volatile uint8_t rx_buffer_tail;
+extern volatile uint8_t serial_rx_buffer_head;
+extern volatile uint8_t serial_rx_buffer_tail;
 void simulate_serial(){
   simulate_write_interrupt();
-  uint8_t head = rx_buffer_head+1;
+  uint8_t head = serial_rx_buffer_head+1;
   if (head==RX_BUFFER_SIZE) { head = 0; }
-  if (head!=rx_buffer_tail) {
+  if (head!=serial_rx_buffer_tail) {
 	 simulate_read_interrupt();
   }
 }
