@@ -196,7 +196,7 @@ void printBlock() {
   if(b!=last_block && b!=NULL) {
    int i;
    for (i=0;i<N_AXIS;i++){
-    if(b->direction_bits & get_direction_mask(i)) block_position[i]-= b->steps[i];
+    if(b->direction_bits & get_direction_pin_mask(i)) block_position[i]-= b->steps[i];
     else block_position[i]+= b->steps[i];
     fprintf(args.block_out_file,"%d, ", block_position[i]);
    }
