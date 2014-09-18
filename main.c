@@ -33,6 +33,8 @@
 #include "../coolant_control.h"
 #include "simulator.h"
 
+int *__brkval = NULL;
+int __heap_start = 0;
 
 arg_vars_t args;
 const char* progname;
