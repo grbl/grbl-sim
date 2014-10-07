@@ -29,6 +29,8 @@
 #include "../report.h"
 #include "../system.h"
 #include "../gcode.h"
+#include "../planner.h"
+#include "../serial.h"
 #include "avr/io.h"
 
 static void protocol_execute_line(char *line);
@@ -112,7 +114,7 @@ int main(int argc, char *argv[]) {
       positional_args++;
       switch(positional_args){
         case 1: //input file
-          args.input_file = fopen(*argv,"w");
+          args.input_file = fopen(*argv,"r");
           if (!args.input_file) {
             perror("fopen");
             printf("Error opening : %s\n",*argv);
@@ -170,9 +172,14 @@ static void protocol_execute_line(char *line)
 
 //read fom input;
 uint8_t serial_read() {
+
   int data = fgetc(args.input_file);
   if (args.echo) { fputc(data, args.output_file); }
   plan_reset();
+  if (feof(args.input_file) || data == 0x06 || data == -1) { 
+    sys.abort = 1;
+    return SERIAL_NO_DATA;
+  }
   return data;
 }
 //write to output

@@ -42,11 +42,11 @@ new: clean main gvalidate
 gvalidate: validator
 
 clean:
-	rm -f $(EXE_NAME) $(OBJECTS)
+	rm -f $(EXE_NAME) $(SIM_OBJECTS) $(GV_OBJECTS) gvalidate.exe
 
 # file targets:
-main: $(OBJECTS)
-	$(COMPILE) -o $(EXE_NAME) $(OBJECTS) -lm  $($(PLATFORM)_LIBRARIES)
+main: $(SIM_OBJECTS)
+	$(COMPILE) -o $(EXE_NAME) $(SIM_OBJECTS) -lm  $($(PLATFORM)_LIBRARIES)
 
 validator: $(GV_OBJECTS)
 	$(COMPILE) -o gvalidate.exe $(GV_OBJECTS)  -lm  $($(PLATFORM)_LIBRARIES)
