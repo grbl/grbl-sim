@@ -15,18 +15,31 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 
-PLATFORM   = WINDOWS
+# PLATFORM   = WINDOWS
+PLATFORM   = LINUX
 
-OBJECTS    = main.o simulator.o serial.o ../main.o ../protocol.o ../planner.o ../settings.o ../print.o ../nuts_bolts.o eeprom.o ../serial.o avr/pgmspace.o avr/interrupt.o avr/io.o util/delay.o util/floatunsisf.o ../stepper.o ../gcode.o ../spindle_control.o ../motion_control.o ../limits.o ../report.o ../coolant_control.o ../probe.o ../system.o platform_$(PLATFORM).o
+# All grbl objects except those overridden by the sim
+BASE_OBJECTS = ../protocol.o ../planner.o ../settings.o ../print.o ../nuts_bolts.o eeprom.o ../stepper.o ../gcode.o ../spindle_control.o ../motion_control.o ../limits.o ../report.o ../coolant_control.o ../probe.o ../system.o 
+AVR_OBJECTS  = avr/interrupt.o avr/pgmspace.o  avr/io.o util/delay.o util/floatunsisf.o
+
+# Objects for runtime sim
+SIM_OBJECTS  = main.o simulator.o serial.o ../main.o ../serial.o  $(BASE_OBJECTS) $(AVR_OBJECTS) platform_$(PLATFORM).o
+# Objects for offline gcode validation
+GV_OBJECTS = validator.o $(BASE_OBJECTS) $(AVR_OBJECTS)
+
 CLOCK      = 16000000
 EXE_NAME   = grbl_sim.exe
 COMPILE    = $(CC) -Wall -g -DF_CPU=$(CLOCK) -include config.h -I. -DPLAT_$(PLATFORM)
 LINUX_LIBRARIES = -lrt -pthread
-WINDOWS_LIBRARIES = 
+WINDOWS_LIBRARIES =
+
+
 # symbolic targets:
 all:	main
 
-new: clean main
+new: clean main gvalidate
+
+gvalidate: validator
 
 clean:
 	rm -f $(EXE_NAME) $(OBJECTS)
@@ -34,6 +47,9 @@ clean:
 # file targets:
 main: $(OBJECTS)
 	$(COMPILE) -o $(EXE_NAME) $(OBJECTS) -lm  $($(PLATFORM)_LIBRARIES)
+
+validator: $(GV_OBJECTS)
+	$(COMPILE) -o gvalidate.exe $(GV_OBJECTS)  -lm  $($(PLATFORM)_LIBRARIES)
 
 %.o: %.c
 	$(COMPILE)  -c $< -o $@
