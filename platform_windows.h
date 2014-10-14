@@ -13,4 +13,6 @@ typedef struct {
 typedef DWORD WINAPI(*plat_threadfunc_t)(LPVOID);
 #define PLAT_THREAD_FUNC(name,arg) DWORD WINAPI name(LPVOID arg)
 
+#define PLATFORM_EXTRA_CR 0
+
 #endif
