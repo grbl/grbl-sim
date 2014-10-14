@@ -49,7 +49,7 @@ main: $(SIM_OBJECTS)
 	$(COMPILE) -o $(EXE_NAME) $(SIM_OBJECTS) -lm  $($(PLATFORM)_LIBRARIES)
 
 validator: $(GV_OBJECTS)
-	$(COMPILE) -o gvalidate.exe $(GV_OBJECTS)  -lm  $($(PLATFORM)_LIBRARIES)
+	$(COMPILE) -o gvalidate.exe $(GV_OBJECTS)  -lm  
 
 %.o: %.c
 	$(COMPILE)  -c $< -o $@
@@ -63,4 +63,5 @@ validator: $(GV_OBJECTS)
 ../main.o: ../main.c
 	$(COMPILE) -include rename_main.h -c $< -o $@
 
-
+../report.o: ../report.c
+	$(COMPILE) -include rename_report_status_message.h -c $< -o $@

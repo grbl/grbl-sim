@@ -3,7 +3,7 @@
 
   Part of Grbl Simulator
 
-  Copyright (c) 2012 Jens Geisler
+  Copyright (c) 2012 Adam Shelly
 
   Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "platform.h"
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,7 +34,7 @@
 #include "../serial.h"
 #include "avr/io.h"
 
-static void protocol_execute_line(char *line);
+
 // Declare system global variable structure
 system_t sys; 
 volatile io_sim_t io;
@@ -51,6 +52,7 @@ extern arg_vars_t args;
 
 arg_vars_t args;
 const char* progname;
+uint8_t exit_code = 0;
 
 
 
@@ -71,7 +73,6 @@ int usage(const char* badarg){
 }
 
 int main(int argc, char *argv[]) {
-  int err = 0;
   int positional_args=0;
 
   //defaults
@@ -79,10 +80,6 @@ int main(int argc, char *argv[]) {
   args.output_file = stdout;
   args.echo = 0;
   args.silent = 0;
-
-  // Get the minimum time step for printing stepper values.
-  // If not given or the command line cannot be parsed to a float than
-  // step_time= 0.0; This means to not print stepper values at all
 
   progname = argv[0];
   while (argc>1) {
@@ -128,55 +125,21 @@ int main(int argc, char *argv[]) {
   }
 
   protocol_main_loop();
-  /* char line[LINE_BUFFER_SIZE+1]; */
-  /* int linecount = 1; */
-  /* while (!feof(args.input_file)) { */
-  /*   char* data = fgets(line, LINE_BUFFER_SIZE, args.input_file); */
-  /*   if (data) { */
-  /*     protocol_execute_line(line); */
-  /*     linecount++; */
-  /*   } */
-  /* } */
-  return err;
+  return exit_code;
 }
 
 
 /**** Re-implemented Funcitons ****/
 
-
-//from protocol.c (is static there)
-static void protocol_execute_line(char *line) 
-{      
-  protocol_execute_runtime(); // Runtime command check point.
-  if (sys.abort) { return; } // Bail to calling function upon system abort  
-
-  if (line[0] == 0) {
-    // Empty or comment line. Send status message for syncing purposes.
-    report_status_message(STATUS_OK);
-
-  } else if (line[0] == '$') {
-    // Grbl '$' system command
-    report_status_message(system_execute_line(line));
-    
-  } else if (sys.state == STATE_ALARM) {
-    // Everything else is gcode. Block if in alarm mode.
-    report_status_message(STATUS_ALARM_LOCK);
-
-  } else {
-    // Parse and execute g-code block!
-    report_status_message(gc_execute_line(line));
-  }
-}
-
-
-
 //read fom input;
 uint8_t serial_read() {
-
   int data = fgetc(args.input_file);
-  if (args.echo) { fputc(data, args.output_file); }
+  if (data == PLATFORM_EXTRA_CR) data = 0;
+  if (args.echo ) { 
+    fputc(data, args.output_file); 
+  }
   plan_reset();
-  if (feof(args.input_file) || data == 0x06 || data == -1) { 
+  if (sys.abort || feof(args.input_file) || data == 0x06 || data == -1) { 
     sys.abort = 1;
     return SERIAL_NO_DATA;
   }
@@ -186,5 +149,18 @@ uint8_t serial_read() {
 void serial_write(uint8_t data) {
   if (!args.silent){
     fputc(data, args.output_file);
+
   }
 }
+
+extern void orig_report_status_message(uint8_t);
+void report_status_message(uint8_t status_code)
+{
+  orig_report_status_message(status_code);
+  if (status_code && !exit_code) {
+    printf("EXITING %d\n",status_code);
+    exit_code = status_code;
+    sys.abort = 1;
+  }
+}
+  

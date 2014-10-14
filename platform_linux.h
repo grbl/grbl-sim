@@ -13,4 +13,8 @@ typedef struct {
 typedef void*(*plat_threadfunc_t)(void*);
 #define PLAT_THREAD_FUNC(name,arg) void* name(void* arg)
 
+#define PLATFORM_EXTRA_CR '\r'
+
+
+
 #endif
