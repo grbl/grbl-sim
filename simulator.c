@@ -146,7 +146,9 @@ void print_steps(bool force)
   static plan_block_t* printed_block = NULL;
   plan_block_t* current_block = plan_get_current_block();
   int ocr = 0;
+  #ifdef VARIABLE_SPINDLE
   if(TCCRA_REGISTER >= 127) ocr = OCR_REGISTER;
+  #endif
   if (sim.next_print_time == 0.0) { return; }  //no printing
   if (current_block != printed_block ) {
    //new block. 
