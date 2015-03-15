@@ -27,6 +27,7 @@
 #include "../stepper.h"
 #include "../planner.h"
 #include "../nuts_bolts.h"
+#include "../settings.h"
 #include "simulator.h"
 #include "avr/interrupt.h" //for registers and isr declarations.
 #include "eeprom.h"
