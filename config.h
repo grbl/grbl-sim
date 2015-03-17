@@ -22,15 +22,12 @@
 
 #ifndef config_h
 
-#ifndef DEFAULTS_GENERIC
-#define DEFAULTS_GENERIC
-#define CPU_MAP_ATMEGA328P_TRADITIONAL
+// Include parent's system.h, not config.h, 
+// because of circular dependency (config.h includes system.h which includes config.h).
+// This way ensures that the CPU Map and other config flags are set before they are needed
+#include "../system.h"
+
 #endif
 
-#include "../config.h"
-#include "../cpu_map.h"
-#include <inttypes.h>
 
-#define AUTO_REPORT_MOVE_DONE
-#endif
 

@@ -1,5 +1,5 @@
 /*
-  interrupt.h - replacement for the avr include of the same name to provide
+  io.h - replacement for the avr include of the same name to provide
   dummy register variables and macros
 
   Part of Grbl Simulator

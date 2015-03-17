@@ -5,6 +5,7 @@
   Part of Grbl Simulator
 
   Copyright (c) 2012 Jens Geisler
+  Copyright (c) 2014 Adam Shelly
 
   Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,7 +21,6 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// These are never called in the simulator
 #include <stdio.h>
 #define MAX_EEPROM_SIZE 4096   //4KB EEPROM in Mega
 
@@ -68,8 +68,9 @@ void eeprom_put_char( unsigned int addr, unsigned char new_value ) {
   fputc(new_value, fp);
 }
 
+
 // Extensions added as part of Grbl 
-// KEEP IN SYNC WITH ../eeprom.c
+//  keep in sync with ../eeprom.c
 
 void memcpy_to_eeprom_with_checksum(unsigned int destination, char *source, unsigned int size) {
   unsigned char checksum = 0;
