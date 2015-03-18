@@ -49,12 +49,12 @@ uint32_t platform_ns()
 {
   static uint32_t gTimeBase = 0;
   __int64 counts;
-  uint32_t us;
+  uint32_t ns;
   QueryPerformanceCounter((LARGE_INTEGER*)&counts);
-  us = (counts*ns_per_perfcount);
+  ns = (counts*ns_per_perfcount);
 
-  if (gTimeBase== 0){gTimeBase=us;}
-  return us-gTimeBase;
+  if (gTimeBase== 0){gTimeBase=ns;}
+  return ns-gTimeBase;
 }
 
 //sleep in microseconds

@@ -70,7 +70,7 @@ void eeprom_put_char( unsigned int addr, unsigned char new_value ) {
 
 
 // Extensions added as part of Grbl 
-//  keep in sync with ../eeprom.c
+// KEEP IN SYNC WITH ../eeprom.c
 
 void memcpy_to_eeprom_with_checksum(unsigned int destination, char *source, unsigned int size) {
   unsigned char checksum = 0;
