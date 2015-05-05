@@ -22,7 +22,13 @@
 
 #ifndef config_h
 #include "../config.h"
+#include "../cpu_map.h"
 #include <inttypes.h>
 
 #define AUTO_REPORT_MOVE_DONE
+#endif
+
+#ifndef DEFAULTS_GENERIC
+#define DEFAULTS_GENERIC
+#define CPU_MAP_ATMEGA328P
 #endif

@@ -145,12 +145,15 @@ void print_steps(bool force)
 { 
   static plan_block_t* printed_block = NULL;
   plan_block_t* current_block = plan_get_current_block();
-
+  int ocr = 0;
+  #ifdef VARIABLE_SPINDLE
+  if(TCCRA_REGISTER >= 127) ocr = OCR_REGISTER;
+  #endif
   if (sim.next_print_time == 0.0) { return; }  //no printing
   if (current_block != printed_block ) {
    //new block. 
    if (block_number) { //print values from the end of prev block
-    fprintf(args.step_out_file, "%20.15f %d, %d, %d\n", sim.sim_time, sys.position[X_AXIS], sys.position[Y_AXIS], sys.position[Z_AXIS]);
+    fprintf(args.step_out_file, "%20.15f %d, %d, %d, %d\n", sim.sim_time, sys.position[X_AXIS], sys.position[Y_AXIS], sys.position[Z_AXIS],ocr);
    }
    printed_block = current_block;
    if (current_block == NULL) { return; }
@@ -159,7 +162,7 @@ void print_steps(bool force)
   }
   //print at correct interval while executing block
   else if ((current_block && sim.sim_time>=sim.next_print_time) || force ) {
-   fprintf(args.step_out_file, "%20.15f %d, %d, %d\n", sim.sim_time, sys.position[X_AXIS], sys.position[Y_AXIS], sys.position[Z_AXIS]);
+   fprintf(args.step_out_file, "%20.15f %d, %d, %d, %d\n", sim.sim_time, sys.position[X_AXIS], sys.position[Y_AXIS], sys.position[Z_AXIS],ocr);
    fflush(args.step_out_file);
 
    //make sure the simulation time doesn't get ahead of next_print_time
@@ -196,7 +199,7 @@ void printBlock() {
   if(b!=last_block && b!=NULL) {
    int i;
    for (i=0;i<N_AXIS;i++){
-    if(b->direction_bits & get_direction_mask(i)) block_position[i]-= b->steps[i];
+    if(b->direction_bits & get_direction_pin_mask(i)) block_position[i]-= b->steps[i];
     else block_position[i]+= b->steps[i];
     fprintf(args.block_out_file,"%d, ", block_position[i]);
    }
