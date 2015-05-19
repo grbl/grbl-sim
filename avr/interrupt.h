@@ -4,7 +4,7 @@
 
   Part of Grbl Simulator
 
-  Copyright (c) 2012 Jens Geisler
+  Copyright (c) 2012-2014 Jens Geisler, Adam Shelly
 
   Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,8 +25,8 @@
 #define interrupt_h
 
 // macros to turn avr interrupts into regular functions
-//#define TIMER1_COMPA_vect
 #define ISR(a) void interrupt_ ## a ()
+#define USE_ISR(name) interrupt_ ## a
 
 // Stubs of the hardware interrupt functions we are using
 void interrupt_TIMER0_COMPA_vect();

@@ -1,4 +1,4 @@
-/*
+  /*
   pgmspace.c - replacement for the avr library of the same name to provide
   dummy functions
 
@@ -20,7 +20,10 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// this is not really ever called in the simulation
 char pgm_read_byte_near(const char* s) {
   return s[0];
 }
+
+//also memory related stuff
+int *__brkval = NULL;
+int __heap_start = 0;

@@ -1,10 +1,9 @@
 /*
-  delay.c - replacement for the avr library of the same name to provide
-  dummy functions
+  grbl_interface.h - functions to link AVR sim to GRBL app
+    stepper interrupt is called
 
   Part of Grbl Simulator
 
-  Copyright (c) 2012 Jens Geisler
   Copyright (c) 2015 Adam Shelly
 
   Grbl is free software: you can redistribute it and/or modify
@@ -21,13 +20,7 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "platform.h"
-#include "../simulator.h"
-
-void _delay_ms(int i) {
-  platform_sleep(i*1000/sim.speedup);
-}
-
-void _delay_us(int i) {
-  platform_sleep(i/sim.speedup);
-}
+void grbl_app_init(void);  //call to setup ISRs and local tracking vars
+void grbl_per_tick(void);  //call per tick to print steps
+void grbl_per_byte(void);  //call per incoming byte to print block info
+void grbl_app_exit(void);  //call to shutdown cleanly

@@ -1,6 +1,7 @@
 #  Part of Grbl Simulator
 #
 #  Copyright (c) 2012 Jens Geisler
+#  Copyright (c) 2014-2015 Adam Shelly
 #
 #  Grbl is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,10 +18,11 @@
 
 PLATFORM   = LINUX
 
-OBJECTS    = main.o simulator.o serial.o ../main.o ../protocol.o ../planner.o ../settings.o ../print.o ../nuts_bolts.o eeprom.o ../serial.o avr/pgmspace.o avr/interrupt.o avr/io.o util/delay.o util/floatunsisf.o ../stepper.o ../gcode.o ../spindle_control.o ../motion_control.o ../limits.o ../report.o ../coolant_control.o ../probe.o ../system.o platform_$(PLATFORM).o
+SIM_OBJECTS = main.o simulator.o serial.o eeprom.o avr/pgmspace.o avr/interrupt.o avr/io.o util/delay.o util/floatunsisf.o platform_$(PLATFORM).o
+APP_OBJECTS =  grbl_interface.o ../main.o ../protocol.o ../planner.o ../settings.o ../print.o ../nuts_bolts.o  ../serial.o  ../stepper.o ../gcode.o ../spindle_control.o ../motion_control.o ../limits.o ../report.o ../coolant_control.o ../probe.o ../system.o 
 CLOCK      = 16000000
 EXE_NAME   = grbl_sim.exe
-COMPILE    = $(CC) -Wall -g -DF_CPU=$(CLOCK) -include config.h -I. -DPLAT_$(PLATFORM)
+COMPILE    = $(CC) -Wall -g -DF_CPU=$(CLOCK) -O3 -include config.h -I. -DPLAT_$(PLATFORM)
 LINUX_LIBRARIES = -lrt -pthread
 WINDOWS_LIBRARIES = 
 # symbolic targets:
@@ -29,11 +31,11 @@ all:	main
 new: clean main
 
 clean:
-	rm -f $(EXE_NAME) $(OBJECTS)
+	rm -f $(EXE_NAME) $(SIM_OBJECTS) $(APP_OBJECTS)
 
 # file targets:
-main: $(OBJECTS)
-	$(COMPILE) -o $(EXE_NAME) $(OBJECTS) -lm  $($(PLATFORM)_LIBRARIES)
+main: $(SIM_OBJECTS) $(APP_OBJECTS)
+	$(COMPILE) -o $(EXE_NAME) $(SIM_OBJECTS) $(APP_OBJECTS) -lm  $($(PLATFORM)_LIBRARIES)
 
 %.o: %.c
 	$(COMPILE)  -c $< -o $@
