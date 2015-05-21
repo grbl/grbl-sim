@@ -36,7 +36,8 @@ GRBL_VAL_OBJECTS = validator.o overridden_report.o $(GRBL_BASE_OBJECTS) $(AVR_OB
 CLOCK      = 16000000
 SIM_EXE_NAME   = grbl_sim.exe
 VALIDATOR_NAME = gvalidate.exe
-COMPILE    = $(CC) -Wall -g -DF_CPU=$(CLOCK)  -include config.h -I. -DPLAT_$(PLATFORM)
+FLAGS = -g -O3
+COMPILE    = $(CC) -Wall $(FLAGS) -DF_CPU=$(CLOCK)  -include config.h -I. -DPLAT_$(PLATFORM)
 LINUX_LIBRARIES = -lrt -pthread
 WINDOWS_LIBRARIES =
 
