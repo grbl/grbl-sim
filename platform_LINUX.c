@@ -47,7 +47,7 @@ uint32_t platform_ns()
   static uint32_t timestamp;
   struct timespec ts;
   clock_gettime(CLOCK_MONOTONIC,&ts);
-  timestamp = ts.tv_sec*1e9+ts.tv_nsec/1;
+  timestamp = ts.tv_sec*1e9+ts.tv_nsec;
   if (gTimeBase== 0){gTimeBase=timestamp;}
   return timestamp - gTimeBase;;
 }

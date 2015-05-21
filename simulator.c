@@ -25,7 +25,7 @@
 #include <stdbool.h>
 
 #include "simulator.h"
-#include "eeprom.h"
+#include "avr/eeprom.h"
 #include "avr/io.h"
 #include "avr/interrupt.h"
 
@@ -49,14 +49,13 @@ void sim_add_hooks(sim_hook_fp initialize,
 //setup 
 void init_simulator(float time_multiplier) {
   sim.speedup = time_multiplier;
-  //  sim.baud_ticks = (int)((double)F_CPU*8/BAUD_RATE); //ticks per byte
 
   sim_hook[sh_INIT]();
 }
 
 
 
-//shutdown simulator - save eeprom
+//shutdown simulator - call exit hooks, save eeprom
 void shutdown_simulator() {
   sim_hook[sh_EXIT]();
   eeprom_close();
@@ -111,7 +110,7 @@ void sim_loop(){
     sim_hook[sh_TICK]();
     
     if (read_serial){
-      //decode baud rate.
+      //decode baud rate. //TODO: maybe do this only once, baud shouldn't change on the fly
       sim.baud_ticks = 2*((UBRR0H<<8)+UBRR0L)+1;
       if (UCSR0A & (1<<U2X0)) { sim.baud_ticks*=2; }
 
