@@ -1,10 +1,10 @@
 /*
-  pgmspace.c - replacement for the avr library of the same name to provide
-  dummy functions
+  grbl_interface.h - functions to link AVR sim to GRBL app
+    stepper interrupt is called
 
   Part of Grbl Simulator
 
-  Copyright (c) 2012 Jens Geisler
+  Copyright (c) 2015 Adam Shelly
 
   Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,10 +20,7 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-char pgm_read_byte_near(const char* s) {
-  return s[0];
-}
-
-//also memory related stuff
-int *__brkval = NULL;
-int __heap_start = 0;
+void grbl_app_init(void);  //call to setup ISRs and local tracking vars
+void grbl_per_tick(void);  //call per tick to print steps
+void grbl_per_byte(void);  //call per incoming byte to print block info
+void grbl_app_exit(void);  //call to shutdown cleanly

@@ -5,6 +5,7 @@
   Part of Grbl Simulator
 
   Copyright (c) 2012 Jens Geisler
+  Copyright (c) 2014-2015 Adam Shelly
 
   Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -24,19 +25,17 @@
 #define simulator_h
 
 #include <stdio.h>
-#include "../nuts_bolts.h"
-#include "../system.h"
 #include "platform.h"
+
 
 //simulation globals
 typedef struct sim_vars {
   uint64_t masterclock;
   double sim_time;  //current time of the simulation
   uint8_t started;  //don't start timers until first char recieved.
-  uint8_t exit; 
+  enum {exit_NO, exit_REQ, exit_OK} exit;
   float speedup;
   int32_t baud_ticks;
-  double next_print_time;
 
 } sim_vars_t;  
 extern sim_vars_t sim;
@@ -46,7 +45,7 @@ typedef struct arg_vars {
   // Output file handles
   FILE *block_out_file;
   FILE *step_out_file;
-  FILE *grbl_out_file;
+  FILE *serial_out_file;
   // Minimum time step for printing stepper values.  //Given by user via command line
   double step_time;
   //char to prefix comments; default  '#' 
@@ -55,26 +54,32 @@ typedef struct arg_vars {
 } arg_vars_t;
 extern arg_vars_t args;
 
+typedef void(*sim_hook_fp)(void); //functions to be inserted in sim loop
 
 // global system variable structure for position etc.
-extern system_t sys;
+//extern system_t sys;
+
+// register application specific hooks
+void sim_add_hooks(sim_hook_fp initialize, 
+                   sim_hook_fp per_tick,
+                   sim_hook_fp per_byte,
+                   sim_hook_fp shutdown);
 
 // setup avr simulation
 void init_simulator(float time_multiplier);
 
-//shutdown simulator - close open files
-int shutdown_simulator(uint8_t exitflag);
+//shutdown simulator - run shutdown hooks, save eeeprom
+void shutdown_simulator();
 
 //simulates the hardware until sim.exit is set.
 void sim_loop();
 
 // Call the stepper interrupt until one block is finished
+// (defined in serial.c)
 void simulate_serial();
 
-// Print information about the most recently inserted block
-void printBlock();
+//print serial output to stdout or file
+void sim_serial_out(uint8_t data);
 
-//printer for grbl serial port output
-void grbl_out(uint8_t char_out);
 
 #endif

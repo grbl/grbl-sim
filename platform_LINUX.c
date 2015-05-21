@@ -1,3 +1,24 @@
+/*
+  platform_LINUX.c - linux specific functions with generic cross-platform interface
+
+  Part of Grbl Simulator
+
+  Copyright (c) 2014 Adam Shelly
+
+  Grbl is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Grbl is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -23,10 +44,12 @@ void platform_terminate()
 uint32_t platform_ns() 
 {
   static uint32_t gTimeBase = 0;
+  static uint32_t timestamp;
   struct timespec ts;
   clock_gettime(CLOCK_MONOTONIC,&ts);
-  if (gTimeBase== 0){gTimeBase=ts.tv_nsec;}
-  return ts.tv_nsec-gTimeBase;
+  timestamp = ts.tv_sec*1e9+ts.tv_nsec;
+  if (gTimeBase== 0){gTimeBase=timestamp;}
+  return timestamp - gTimeBase;;
 }
 
 //sleep in microseconds
@@ -80,8 +103,6 @@ int kbhit (void)
 
   return retval;
 }
-
-
 
 plat_thread_t* platform_start_thread(plat_threadfunc_t threadfunc) {
   plat_thread_t* th = malloc(sizeof(plat_thread_t));

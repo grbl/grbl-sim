@@ -6,6 +6,7 @@
   Part of Grbl Simulator
 
   Copyright (c) 2012 Jens Geisler
+  Copyright (c) 2014 Adam Shelly
 
   Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,11 +22,13 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "./avr/interrupt.h"
-#include "../serial.h"
 #include <stdio.h>
+
 #include "simulator.h"
-#include <stdio.h>
+#include "avr/io.h"
+#include "avr/interrupt.h"
+
+#include "../serial.h"
 
 
 //prototypes for overridden functions
@@ -42,7 +45,7 @@ uint8_t serial_read() {
 void simulate_write_interrupt(){
   while (UCSR0B & (1<<UDRIE0)){
 	 interrupt_SERIAL_UDRE();
-	 grbl_out(UDR0);
+	 sim_serial_out(UDR0);
   }
 }
 
@@ -52,7 +55,7 @@ void simulate_read_interrupt(){
 	 UDR0 = char_in;
 	 //EOF or CTRL-F to exit
 	 if (UDR0 == EOF || UDR0 == 0xFF || UDR0 == 0x06 ) {
-		sim.exit = 1;
+		sim.exit = exit_REQ;
 	 }
 	 //debugging
 	 if (UDR0 == '%') { 

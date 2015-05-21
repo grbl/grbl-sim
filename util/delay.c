@@ -5,6 +5,7 @@
   Part of Grbl Simulator
 
   Copyright (c) 2012 Jens Geisler
+  Copyright (c) 2015 Adam Shelly
 
   Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,8 +21,13 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// TODO: the simulation time should reflect when grbl dwells
-// Maybe this becomes a no-issue when dwell is executed in a buffered block
-void _delay_ms(int i) {}
+#include "platform.h"
+#include "../simulator.h"
 
-void _delay_us(int i) {}
+void _delay_ms(int i) {
+  platform_sleep(i*1000/sim.speedup);
+}
+
+void _delay_us(int i) {
+  platform_sleep(i/sim.speedup);
+}

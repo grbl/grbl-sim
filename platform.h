@@ -7,6 +7,7 @@
 #endif
 
 #define platform_h
+#include <inttypes.h>
 
 void platform_init();
 void platform_terminate();
