@@ -17,6 +17,7 @@
 #  along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 
 # PLATFORM   = WINDOWS
+# PLATFORM   = OSX
 PLATFORM   = LINUX
 
 #The original grbl code, except those files overriden by sim
@@ -39,6 +40,7 @@ VALIDATOR_NAME = gvalidate.exe
 FLAGS = -g -O3
 COMPILE    = $(CC) -Wall $(FLAGS) -DF_CPU=$(CLOCK)  -include config.h -I. -DPLAT_$(PLATFORM)
 LINUX_LIBRARIES = -lrt -pthread
+OSX_LIBRARIES =
 WINDOWS_LIBRARIES =
 
 # symbolic targets:
