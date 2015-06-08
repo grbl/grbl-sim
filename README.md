@@ -14,8 +14,8 @@ This repository contains an experimental Grbl simulator that compiles the main G
  - A powerful debugging tool for development.
  - Each of the AVR functions are replaced with dummy functions, like the stepper ISR. These could be written to do whatever you need. For example, output simulated step pulses over time and examine its performance.
  - On Linux, hook it to a fake serial port (/dev/ttyFAKE) and use it to test your Grbl interface software:
-
   -  `> socat PTY,raw,link=/dev/ttyFAKE,echo=0 "EXEC:'./grbl_sim.exe -n -s step.out -b block.out',pty,raw,echo=0" `
+  -  You can use the simport.sh script for this as well.
 
  
 ### Realtime modifications:
