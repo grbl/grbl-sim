@@ -157,6 +157,11 @@ uint8_t serial_get_rx_buffer_count() {
   return 0;  //not important for gcode validation
 }
 
+uint8_t serial_get_rx_buffer_available()
+{
+  return 0;
+}
+
 extern void orig_report_status_message(uint8_t);
 void report_status_message(uint8_t status_code)
 {

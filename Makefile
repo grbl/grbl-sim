@@ -21,7 +21,7 @@
 PLATFORM   = LINUX
 
 #The original grbl code, except those files overriden by sim
-GRBL_BASE_OBJECTS =   ../protocol.o ../planner.o ../settings.o ../print.o ../nuts_bolts.o  ../stepper.o ../gcode.o ../spindle_control.o ../motion_control.o ../limits.o ../coolant_control.o ../probe.o ../system.o 
+GRBL_BASE_OBJECTS =   ../protocol.o ../planner.o ../settings.o ../print.o ../nuts_bolts.o  ../stepper.o ../gcode.o ../spindle_control.o ../motion_control.o ../limits.o ../coolant_control.o ../probe.o ../system.o ../jog.o 
 # grbl files that have simulator overrrides 
 GRBL_OVERRIDE_OBJECTS =  ../main.o ../serial.o ../report.o
 
@@ -29,10 +29,10 @@ GRBL_OVERRIDE_OBJECTS =  ../main.o ../serial.o ../report.o
 AVR_OBJECTS  = avr/interrupt.o avr/pgmspace.o  avr/io.o  avr/eeprom.o grbl_eeprom_extensions.o
 
 # Simulator Only Objects
-SIM_OBJECTS = main.o simulator.o serial.o util/delay.o util/floatunsisf.o platform_$(PLATFORM).o
+SIM_OBJECTS = main.o simulator.o serial.o util/delay.o util/floatunsisf.o platform_$(PLATFORM).o system_declares.o
 
 GRBL_SIM_OBJECTS = grbl_interface.o  $(GRBL_BASE_OBJECTS) $(GRBL_OVERRIDE_OBJECTS) $(SIM_OBJECTS) $(AVR_OBJECTS)
-GRBL_VAL_OBJECTS = validator.o overridden_report.o $(GRBL_BASE_OBJECTS) $(AVR_OBJECTS)
+GRBL_VAL_OBJECTS = validator.o overridden_report.o $(GRBL_BASE_OBJECTS) $(AVR_OBJECTS) system_declares.o
 
 CLOCK      = 16000000
 SIM_EXE_NAME   = grbl_sim.exe
