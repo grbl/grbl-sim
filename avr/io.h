@@ -166,6 +166,7 @@ volatile extern io_sim_t io;
 #define CS11 1
 #define CS10 0
 #define CS21 1
+#define CS22 2
 
 #define WGM13 4
 #define WGM12 3
