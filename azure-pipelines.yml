@@ -1,0 +1,47 @@
+# C/C++ with GCC
+# Build your C/C++ project with GCC using make.
+# Add steps that publish test results, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/c-cpp/gcc
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+steps:
+- script: |
+    git clone https://github.com/gnea/grbl.git
+    cd grbl/grbl
+    git clone https://github.com/grbl/grbl-sim.git
+
+    mkdir -p "$(Build.ArtifactStagingDirectory)/linux"
+    mkdir -p "$(Build.ArtifactStagingDirectory)/windows"
+  displayName: 'Get sources and create output directories'
+- script: |
+    make new --environment-overrides
+  displayName: 'make for Linux'
+  env: 
+    {
+      "SIM_EXE_NAME": "$(Build.ArtifactStagingDirectory)/linux/grbl_sim",
+      "VALIDATOR_NAME": "$(Build.ArtifactStagingDirectory)/linux/gvalidate"
+    }
+  workingDirectory: 'grbl/grbl/grbl-sim'
+- script: |
+    sudo apt-get update
+    sudo apt-get install mingw-w64
+  displayName: 'Install cross compiler for Windows'
+- script: |
+    make new --environment-overrides
+  displayName: 'make for Windows'
+  env: 
+    {
+      "PLATFORM":"WINDOWS",
+      "CC":"/etc/alternatives/i686-w64-mingw32-gcc",
+      "WINDOWS_LIBRARIES":"-I /usr/i686-w64-mingw32/include",
+      "SIM_EXE_NAME": "$(Build.ArtifactStagingDirectory)/windows/grbl_sim.exe",
+      "VALIDATOR_NAME": "$(Build.ArtifactStagingDirectory)/windows/gvalidate.exe"
+    }
+  workingDirectory: 'grbl/grbl/grbl-sim'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish binary files'
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: drop
