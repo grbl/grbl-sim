@@ -37,7 +37,7 @@
 
 // Declare system global variable structure
 system_t sys; 
-volatile io_sim_t io;
+/*volatile io_sim_t io;*/
 
 
 typedef struct arg_vars {
